@@ -30,7 +30,7 @@ const App: React.SFC = () => {
         <img src={logo} className='App-logo' alt='logo' />
         <p>{messageState.messageText}</p>
         <a className='App-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
-          Learn React
+          {process.env.REACT_APP_TEST || 'Error'}
         </a>
       </header>
     </div>
