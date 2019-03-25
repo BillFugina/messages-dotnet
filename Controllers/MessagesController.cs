@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using PusherServer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Web.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace messages_dotnet.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class MessagesController : Controller
     {
         private readonly Entities.Options.Pusher _pusherOptions;
@@ -18,9 +21,9 @@ namespace messages_dotnet.Controllers
             _pusherOptions = pusherOptionsAccessor.CurrentValue;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("auth")]
-        public ActionResult Auth([FromQuery]string channel_name, [FromQuery]string socket_id)
+        public ActionResult Auth(string channel_name, string socket_id)
         {
             var pusher = new Pusher(_pusherOptions.PUSHER_APP_ID, _pusherOptions.PUSHER_KEY, _pusherOptions.PUSHER_SECRET);
             var auth = pusher.Authenticate(channel_name, socket_id);
