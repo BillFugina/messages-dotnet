@@ -19,6 +19,10 @@ namespace messages_dotnet
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddEnvironmentVariables(prefix: "REACT_APP_");
+            })
+            .UseStartup<Startup>();
     }
 }

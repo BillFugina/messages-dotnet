@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PusherServer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace messages_dotnet.Controllers

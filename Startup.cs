@@ -27,6 +27,8 @@ namespace messages_dotnet
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.Configure<Entities.Options.Pusher>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
