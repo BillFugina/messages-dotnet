@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Web.Http;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 namespace messages_dotnet.Controllers
 {
@@ -19,6 +20,19 @@ namespace messages_dotnet.Controllers
         public MessagesController(IOptionsMonitor<Entities.Options.Pusher> pusherOptionsAccessor)
         {
             _pusherOptions = pusherOptionsAccessor.CurrentValue;
+        }
+
+        [HttpGet]
+        [Route("options")]
+        public string GetOptions()
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented
+            };
+
+            var result = JsonConvert.SerializeObject(_pusherOptions, settings);
+            return result;
         }
 
         [HttpPost]
