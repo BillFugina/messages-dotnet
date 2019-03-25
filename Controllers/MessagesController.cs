@@ -22,19 +22,6 @@ namespace messages_dotnet.Controllers
             _pusherOptions = pusherOptionsAccessor.CurrentValue;
         }
 
-        [HttpGet]
-        [Route("options")]
-        public string GetOptions()
-        {
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented
-            };
-
-            var result = JsonConvert.SerializeObject(_pusherOptions, settings);
-            return result;
-        }
-
         [HttpPost]
         [Route("auth")]
         public ActionResult Auth(string channel_name, string socket_id)
