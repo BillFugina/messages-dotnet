@@ -1,65 +1,41 @@
 import 'src/App.css'
 import 'bootstrap/dist/css/bootstrap.css'
-import { BsPrefixProps, ReplaceProps } from 'react-bootstrap/helpers'
-import { Button, Container, FormControl, FormControlProps, InputGroup } from 'react-bootstrap'
-import { PusherReducer } from 'src/types/pusher'
-import { usePusher } from 'src/hooks/pusher-hook'
-import logo from 'src/logo.svg'
-import React, { useCallback, useState } from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { ChannelView } from 'src/views/channel-view'
+import { HomeView } from 'src/views/home-view'
+import { IApplicationStateContextReducer } from 'src/context/application-state-context'
+import { StateProvider } from 'src/context/application-state-context-provider'
+import React from 'react'
 
-type IMessageFormat = {
-  type: 'text' | 'client-text'
-  body: string
+interface IApplicationState {
+  color: 'red' | 'blue'
 }
 
-type IMessageState = {
-  messageText: string
+interface IApplicationAction<T = any> {
+  type: 'noop'
+  payload: T
 }
 
-const reducer: PusherReducer<IMessageState, IMessageFormat> = (state, message) => {
-  return { ...state, messageText: message.body }
+const initialApplicationState: IApplicationState = {
+  color: 'red'
 }
 
-const initialState: IMessageState = {
-  messageText: 'hello world'
+const applicationReducer: IApplicationStateContextReducer<IApplicationState, IApplicationAction> = (state, action) => {
+  switch (action.type) {
+    case 'noop':
+    default:
+      return state
+  }
 }
 
 const App: React.SFC = () => {
-  const [messageState, sendMessage] = usePusher(reducer, initialState, {
-    privateChannel: true,
-    initialChannelName: 'messages',
-    initialEventName: 'text'
-  })
-  const [messageText, setMessageText] = useState<string>('')
-
-  const handleTextChange = useCallback(
-    (event: React.FormEvent<ReplaceProps<'input', BsPrefixProps<'input'> & FormControlProps>>) => {
-      event.persist
-      setMessageText(event.currentTarget.value || '')
-    },
-    []
-  )
-
-  const handleButtonClick = useCallback(() => {
-    sendMessage({ type: 'text', body: messageText }, true)
-  }, [messageText])
-
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>{messageState.messageText}</p>
-        <a className='App-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
-          Learn React
-        </a>
-        <Container>
-          <InputGroup>
-            <FormControl placeholder='message text' onChange={handleTextChange} value={messageText} />
-          </InputGroup>
-          <Button onClick={handleButtonClick}>Send Message</Button>
-        </Container>
-      </header>
-    </div>
+    <StateProvider initialState={initialApplicationState} reducer={applicationReducer}>
+      <Router>
+        <Route exact={true} path='/' component={HomeView} />
+        <Route path='/channel' component={ChannelView} />
+      </Router>
+    </StateProvider>
   )
 }
 
