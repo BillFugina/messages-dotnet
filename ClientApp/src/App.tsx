@@ -25,7 +25,11 @@ const initialState: IMessageState = {
 }
 
 const App: React.SFC = () => {
-  const [messageState, sendMessage] = usePusher('messages', 'text', reducer, initialState, { privateChannel: true })
+  const [messageState, sendMessage] = usePusher(reducer, initialState, {
+    privateChannel: true,
+    initialChannelName: 'messages',
+    initialEventName: 'text'
+  })
   const [messageText, setMessageText] = useState<string>('')
 
   const handleTextChange = useCallback(
