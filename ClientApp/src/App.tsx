@@ -1,41 +1,13 @@
-import { ChannelView } from 'src/views/channel-view'
 import 'bootstrap/dist/css/bootstrap.css'
-import {
-  ApplicationStateContext,
-  IApplicationContext,
-  IApplicationStateContextReducer
-} from 'src/context/application-state-context'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { ChangeLocationPathApplicationAction, IApplicationAction } from 'src/types/application-actions'
 import 'src/App.css'
+import { applicationReducer, initialApplicationState, useApplicationState } from 'src/application-state'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { ChangeLocationPathApplicationAction } from 'src/application-actions'
+import { ChannelView } from 'src/views/channel-view'
 import { HomeView } from 'src/views/home-view'
-import { IApplicationState } from 'src/types/application-state'
 import { IRouterProps } from 'src/types/router'
 import { StateProvider } from 'src/context/application-state-context-provider'
-import React, { useContext, useEffect } from 'react'
-
-const initialApplicationState: IApplicationState = {
-  color: 'red',
-  locationPath: undefined,
-  otherPath: undefined
-}
-
-const applicationReducer: IApplicationStateContextReducer<IApplicationState, IApplicationAction> = (state, action) => {
-  switch (action.type) {
-    case 'change-path':
-      return { ...state, locationPath: action.payload }
-    case 'change-other-path':
-      return { ...state, otherPath: action.payload }
-    case 'noop':
-    default:
-      return state
-  }
-}
-
-export const useApplicationState = () => {
-  const context = useContext<IApplicationContext<IApplicationState, IApplicationAction>>(ApplicationStateContext)
-  return context
-}
+import React, { useEffect } from 'react'
 
 interface IWrapperProps extends IRouterProps {}
 
