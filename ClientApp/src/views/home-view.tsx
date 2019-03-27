@@ -1,5 +1,5 @@
+import { ApplicationActions } from 'src/application-actions'
 import { Button, Container, FormControl, InputGroup } from 'react-bootstrap'
-import { ChangeChannelApplicationAction } from 'src/application-actions'
 import { IFormEvent } from 'src/types/react-bootstrap'
 import { useApplicationState } from 'src/application-state'
 import logo from 'src/logo.svg'
@@ -19,7 +19,7 @@ export const HomeView: React.SFC<IComponentProps> = () => {
   }, [])
 
   const handleButtonClick = useCallback(() => {
-    dispatch(ChangeChannelApplicationAction(channelName))
+    dispatch(ApplicationActions.changeChannel(channelName))
   }, [channelName])
 
   return (

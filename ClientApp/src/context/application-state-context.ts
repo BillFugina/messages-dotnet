@@ -1,6 +1,5 @@
 import { createContext } from 'react'
+import { IDispatcher } from 'src/types/state'
 
-export type IApplicationStateContextReducer<TState, TAction> = (state: TState, action: TAction) => TState
-export type IApplicationStateDispatcher<TAction> = (action: TAction) => void
-export type IApplicationContext<TState, TAction> = [TState, IApplicationStateDispatcher<TAction>]
+export type IApplicationContext<TState, TAction> = [TState, IDispatcher<TAction>]
 export const ApplicationStateContext = createContext<any>({})

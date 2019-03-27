@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import 'src/App.css'
+import { ApplicationActions } from 'src/application-actions'
 import { applicationReducer, initialApplicationState, useApplicationState } from 'src/application-state'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { ChangeLocationPathApplicationAction } from 'src/application-actions'
 import { ChannelView } from 'src/views/channel-view'
 import { HomeView } from 'src/views/home-view'
 import { IRouterProps } from 'src/types/router'
@@ -17,7 +17,7 @@ const WrapperRoute: React.SFC<IWrapperProps> = props => {
 
   useEffect(() => {
     if (locationPath !== location.pathname) {
-      dispatch(ChangeLocationPathApplicationAction(location.pathname))
+      dispatch(ApplicationActions.changePath(location.pathname))
     }
   }, [location.pathname])
 

@@ -1,29 +1,25 @@
-export type IApplicationActionType = 'noop' | 'change-path' | 'change-channel'
+import { IAction, IActionCreators } from 'src/types/actions'
 
-export interface IBaseApplicationAction<TActionType extends IApplicationActionType, TPayload> {
-  type: TActionType
-  payload: TPayload
+export type IApplicationActionPayloadMap = {
+  noop: undefined
+  changePath: string
+  changeChannel: string
 }
 
-export type IApplicationAction =
-  | INoOpApplicationAction
-  | IChangeLocationPathApplicationAction
-  | IChangeChannelApplicationAction
+export type IApplicationActionType = keyof IApplicationActionPayloadMap
+export type IApplicationAction = IAction<IApplicationActionPayloadMap>
 
-export type INoOpApplicationAction = IBaseApplicationAction<'noop', undefined>
-export const NoOpApplicationAction = (): INoOpApplicationAction => ({
-  type: 'noop',
-  payload: undefined
-})
-
-export type IChangeLocationPathApplicationAction = IBaseApplicationAction<'change-path', string>
-export const ChangeLocationPathApplicationAction = (path: string): IChangeLocationPathApplicationAction => ({
-  type: 'change-path',
-  payload: path
-})
-
-export type IChangeChannelApplicationAction = IBaseApplicationAction<'change-channel', string | undefined>
-export const ChangeChannelApplicationAction = (channelName?: string): IChangeChannelApplicationAction => ({
-  type: 'change-channel',
-  payload: channelName
-})
+export const ApplicationActions: IActionCreators<IApplicationActionPayloadMap> = {
+  noop: () => ({
+    type: 'noop',
+    payload: undefined
+  }),
+  changePath: (path: string) => ({
+    type: 'changePath',
+    payload: path
+  }),
+  changeChannel: (channelName: string) => ({
+    type: 'changeChannel',
+    payload: channelName
+  })
+}

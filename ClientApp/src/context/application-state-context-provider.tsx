@@ -1,8 +1,9 @@
-import { ApplicationStateContext, IApplicationStateContextReducer } from 'src/context/application-state-context'
+import { ApplicationStateContext } from 'src/context/application-state-context'
+import { IReducer } from 'src/types/state'
 import React, { useReducer } from 'react'
 
 interface IComponentProps<TState, TAction> {
-  reducer: IApplicationStateContextReducer<TState, TAction>
+  reducer: IReducer<TState, TAction>
   initialState: TState
   children: JSX.Element
 }

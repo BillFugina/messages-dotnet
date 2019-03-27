@@ -1,9 +1,6 @@
-import {
-  ApplicationStateContext,
-  IApplicationContext,
-  IApplicationStateContextReducer
-} from 'src/context/application-state-context'
+import { ApplicationStateContext, IApplicationContext } from 'src/context/application-state-context'
 import { IApplicationAction } from 'src/application-actions'
+import { IReducer } from 'src/types/state'
 import { useContext } from 'react'
 
 export interface IApplicationState {
@@ -18,14 +15,11 @@ export const useApplicationState = () => {
   return context
 }
 
-export const applicationReducer: IApplicationStateContextReducer<IApplicationState, IApplicationAction> = (
-  state,
-  action
-) => {
+export const applicationReducer: IReducer<IApplicationState, IApplicationAction> = (state, action) => {
   switch (action.type) {
-    case 'change-path':
+    case 'changePath':
       return { ...state, locationPath: action.payload }
-    case 'change-channel':
+    case 'changeChannel':
       return { ...state, locationPath: '/channel', channelName: action.payload }
     case 'noop':
     default:
