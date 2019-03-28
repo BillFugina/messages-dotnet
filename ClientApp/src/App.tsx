@@ -1,65 +1,44 @@
-import 'src/App.css'
 import 'bootstrap/dist/css/bootstrap.css'
-import { BsPrefixProps, ReplaceProps } from 'react-bootstrap/helpers'
-import { Button, Container, FormControl, FormControlProps, InputGroup } from 'react-bootstrap'
-import { PusherReducer } from 'src/types/pusher'
-import { usePusher } from 'src/hooks/pusher-hook'
-import logo from 'src/logo.svg'
-import React, { useCallback, useState } from 'react'
+import 'src/App.css'
+import { ApplicationActions } from 'src/application-actions'
+import { applicationReducer, initialApplicationState, useApplicationState } from 'src/application-state'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { ChannelView } from 'src/views/channel-view'
+import { HomeView } from 'src/views/home-view'
+import { IRouterProps } from 'src/types/router'
+import { StateProvider } from 'src/context/application-state-context-provider'
+import React, { useEffect } from 'react'
 
-type IMessageFormat = {
-  type: 'text' | 'client-text'
-  body: string
-}
+interface IWrapperProps extends IRouterProps {}
 
-type IMessageState = {
-  messageText: string
-}
+const WrapperRoute: React.SFC<IWrapperProps> = props => {
+  const { location, history } = props
+  const [{ locationPath }, dispatch] = useApplicationState()
 
-const reducer: PusherReducer<IMessageState, IMessageFormat> = (state, message) => {
-  return { ...state, messageText: message.body }
-}
+  useEffect(() => {
+    if (locationPath !== location.pathname) {
+      dispatch(ApplicationActions.changePath(location.pathname))
+    }
+  }, [location.pathname])
 
-const initialState: IMessageState = {
-  messageText: 'hello world'
+  useEffect(() => {
+    if (locationPath && location.pathname !== locationPath) {
+      history.push(locationPath)
+    }
+  }, [locationPath])
+
+  return null
 }
 
 const App: React.SFC = () => {
-  const [messageState, sendMessage] = usePusher(reducer, initialState, {
-    privateChannel: true,
-    initialChannelName: 'messages',
-    initialEventName: 'text'
-  })
-  const [messageText, setMessageText] = useState<string>('')
-
-  const handleTextChange = useCallback(
-    (event: React.FormEvent<ReplaceProps<'input', BsPrefixProps<'input'> & FormControlProps>>) => {
-      event.persist
-      setMessageText(event.currentTarget.value || '')
-    },
-    []
-  )
-
-  const handleButtonClick = useCallback(() => {
-    sendMessage({ type: 'text', body: messageText }, true)
-  }, [messageText])
-
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>{messageState.messageText}</p>
-        <a className='App-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
-          Learn React
-        </a>
-        <Container>
-          <InputGroup>
-            <FormControl placeholder='message text' onChange={handleTextChange} value={messageText} />
-          </InputGroup>
-          <Button onClick={handleButtonClick}>Send Message</Button>
-        </Container>
-      </header>
-    </div>
+    <StateProvider initialState={initialApplicationState} reducer={applicationReducer}>
+      <Router>
+        <Route path='/' component={WrapperRoute} />
+        <Route exact={true} path='/' component={HomeView} />
+        <Route path='/channel' component={ChannelView} />
+      </Router>
+    </StateProvider>
   )
 }
 
