@@ -1,12 +1,11 @@
 import { ApplicationActions } from 'src/application-actions'
-import { Button, Container, FormControl, InputGroup } from 'react-bootstrap'
+import { Button, Col, Container, FormControl, InputGroup, Row } from 'react-bootstrap'
 import { IAction, IActionCreators } from 'src/types/actions'
 import { IFormEvent } from 'src/types/react-bootstrap'
 import { IReducer } from 'src/types/state'
 import { IRouterProps } from 'src/types/router'
 import { useApplicationState } from 'src/application-state'
 import { usePusher } from 'src/hooks/pusher-hook'
-import logo from 'src/logo.svg'
 import React, { useCallback, useEffect, useState } from 'react'
 
 interface IComponentOwnProps {}
@@ -68,19 +67,22 @@ export const ChannelView: React.SFC<IComponentProps> = () => {
   }, [channelName])
 
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <a className='App-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
-          {messageState.messageText}
-        </a>
-        <Container>
+    <Container>
+      <Row>
+        <Col>{messageState.messageText}</Col>
+      </Row>
+      <Row>
+        <Col>
           <InputGroup>
             <FormControl type='input' placeholder='Message Text' value={inputText} onChange={handleTextChange} />
           </InputGroup>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           <Button onClick={handleButtonClick}>Send Message</Button>
-        </Container>
-      </header>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   )
 }

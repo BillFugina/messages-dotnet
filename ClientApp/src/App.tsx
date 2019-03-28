@@ -32,13 +32,15 @@ const WrapperRoute: React.SFC<IWrapperProps> = props => {
 
 const App: React.SFC = () => {
   return (
-    <StateProvider initialState={initialApplicationState} reducer={applicationReducer}>
-      <Router>
-        <Route path='/' component={WrapperRoute} />
-        <Route exact={true} path='/' component={HomeView} />
-        <Route path='/channel' component={ChannelView} />
-      </Router>
-    </StateProvider>
+    <div className='App'>
+      <StateProvider initialState={initialApplicationState} reducer={applicationReducer}>
+        <Router>
+          <Route path='/' component={WrapperRoute} />
+          <Route exact={true} path='/' component={HomeView} />
+          <Route path='/channel' component={ChannelView} />
+        </Router>
+      </StateProvider>
+    </div>
   )
 }
 
