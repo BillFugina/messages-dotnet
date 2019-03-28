@@ -6,9 +6,13 @@ import { useContext } from 'react'
 export interface IApplicationState {
   locationPath?: string
   channelName?: string
+  nick?: string
 }
 
-export const initialApplicationState: IApplicationState = {}
+export const initialApplicationState: IApplicationState = {
+  channelName: 'foo',
+  nick: 'bill'
+}
 
 export const useApplicationState = () => {
   const context = useContext<IApplicationContext<IApplicationState, IApplicationAction>>(ApplicationStateContext)
@@ -19,8 +23,8 @@ export const applicationReducer: IReducer<IApplicationState, IApplicationAction>
   switch (action.type) {
     case 'changePath':
       return { ...state, locationPath: action.payload }
-    case 'changeChannel':
-      return { ...state, locationPath: '/channel', channelName: action.payload }
+    case 'openChannel':
+      return { ...state, locationPath: '/channel', channelName: action.payload.channelName, nick: action.payload.nick }
     case 'noop':
     default:
       return state
