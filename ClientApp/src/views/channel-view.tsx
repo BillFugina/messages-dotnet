@@ -60,6 +60,7 @@ export const ChannelView: React.SFC<IComponentProps> = () => {
 
   const handleButtonClick = useCallback(() => {
     sendMessage(ChannelActions.text(inputText), true)
+    setInputText('')
   }, [inputText])
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export const ChannelView: React.SFC<IComponentProps> = () => {
   }, [channelName])
 
   useEffect(() => {
-    if (messageState.messageText && messages.length > 0 && messages[0] !== messageState.messageText) {
+    if (messageState.messageText && (messages.length === 0 || messages[0] !== messageState.messageText)) {
       const newMessages = [messageState.messageText, ...messages]
       setMessages(newMessages)
     }
