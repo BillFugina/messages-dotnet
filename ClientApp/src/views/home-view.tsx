@@ -1,8 +1,7 @@
 import { ApplicationActions } from 'src/application-actions'
-import { Button, Container, FormControl, InputGroup } from 'react-bootstrap'
+import { Button, Container, Form } from 'react-bootstrap'
 import { IFormEvent } from 'src/types/react-bootstrap'
 import { useApplicationState } from 'src/application-state'
-import logo from 'src/logo.svg'
 import React, { useCallback, useState } from 'react'
 
 interface IComponentOwnProps {}
@@ -10,32 +9,44 @@ interface IComponentOwnProps {}
 interface IComponentProps extends IComponentOwnProps {}
 
 export const HomeView: React.SFC<IComponentProps> = () => {
-  const [{ locationPath }, dispatch] = useApplicationState()
+  const [{}, dispatch] = useApplicationState()
   const [channelName, setChannelName] = useState<string>('')
+  const [nick, setNick] = useState<string>('')
+  const [validated, setValidated] = useState(false)
 
-  const handleTextChange = useCallback((event: IFormEvent<'input'>) => {
+  const handleChannelTextChange = useCallback((event: IFormEvent<'input'>) => {
     event.persist
     setChannelName(event.currentTarget.value || '')
   }, [])
 
+  const handleNickTextChange = useCallback((event: IFormEvent<'input'>) => {
+    event.persist
+    setNick(event.currentTarget.value || '')
+  }, [])
+
   const handleButtonClick = useCallback(() => {
-    dispatch(ApplicationActions.changeChannel(channelName))
-  }, [channelName])
+    if (channelName !== '' && nick !== '') {
+      dispatch(ApplicationActions.openChannel({ channelName, nick }))
+    } else {
+      setValidated(true)
+    }
+  }, [channelName, nick])
 
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <a className='App-link' href='https://reactjs.org' target='_blank' rel='noopener noreferrer'>
-          {locationPath}
-        </a>
-        <Container>
-          <InputGroup>
-            <FormControl type='input' placeholder='Channel Name' value={channelName} onChange={handleTextChange} />
-          </InputGroup>
-          <Button onClick={handleButtonClick}>Open Channel</Button>
-        </Container>
-      </header>
-    </div>
+    <Container>
+      <Form validated={validated}>
+        <Form.Group>
+          <Form.Label>Channel Name</Form.Label>
+          <Form.Control size='sm' type='input' value={channelName} onChange={handleChannelTextChange} required={true} />
+          <Form.Control.Feedback type='invalid'>Channel Name is required</Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Nick Name</Form.Label>
+          <Form.Control size='sm' type='input' value={nick} onChange={handleNickTextChange} required={true} />
+          <Form.Control.Feedback type='invalid'>Nick Name is required</Form.Control.Feedback>
+        </Form.Group>
+        <Button onClick={handleButtonClick}>Open Channel</Button>
+      </Form>
+    </Container>
   )
 }

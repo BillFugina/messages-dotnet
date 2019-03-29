@@ -1,4 +1,4 @@
-export type IActionCreators<T> = { [K in keyof T]: (...args: any[]) => { type: K; payload: T[K] } }
+export type IActionCreators<T> = { [K in keyof T]: (payload: T[K], ...other: any[]) => { type: K; payload: T[K] } }
 
 export type IActions<T> = { [K in keyof T]: { type: K; payload: T[K] } }
 
