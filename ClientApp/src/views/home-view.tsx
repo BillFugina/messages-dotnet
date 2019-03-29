@@ -26,7 +26,7 @@ export const HomeView: React.SFC<IComponentProps> = () => {
 
   const handleButtonClick = useCallback(() => {
     if (channelName !== '' && nick !== '') {
-      dispatch(ApplicationActions.openChannel(channelName))
+      dispatch(ApplicationActions.openChannel({ channelName, nick }))
     } else {
       setValidated(true)
     }

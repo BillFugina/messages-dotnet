@@ -1,5 +1,5 @@
-import { Alert, Button, Container, FormControl, InputGroup } from 'react-bootstrap'
 import { ApplicationActions } from 'src/application-actions'
+import { Badge, Button, Container, FormControl, InputGroup, Row } from 'react-bootstrap'
 import { IAction, IActionCreators } from 'src/types/actions'
 import { IFormEvent } from 'src/types/react-bootstrap'
 import { IReducer } from 'src/types/state'
@@ -13,30 +13,33 @@ interface IComponentOwnProps {}
 
 interface IComponentProps extends IComponentOwnProps, IRouterProps {}
 
+type IChannelMessage = {
+  user: string
+  message: string
+}
+
 type IChannelActionPayloadMap = {
   noop: undefined
-  text: string
+  text: IChannelMessage
 }
 
 type IChannelAction = IAction<IChannelActionPayloadMap>
 
 const ChannelActions: IActionCreators<IChannelActionPayloadMap> = {
   noop: () => ({ type: 'noop', payload: undefined }),
-  text: (text: string) => ({ type: 'text', payload: text })
+  text: (payload: { message: string; user: string }) => ({ type: 'text', payload })
 }
 
 type IChannelState = {
-  messageText: string
+  channelMessage?: IChannelMessage
 }
 
-const defaultChannelState = {
-  messageText: ''
-}
+const defaultChannelState: IChannelState = {}
 
 const ChannelReducer: IReducer<IChannelState, IChannelAction> = (state, action) => {
   switch (action.type) {
     case 'text': {
-      return { ...state, messageText: action.payload }
+      return { ...state, channelMessage: action.payload }
     }
     case 'noop':
     default:
@@ -45,13 +48,13 @@ const ChannelReducer: IReducer<IChannelState, IChannelAction> = (state, action) 
 }
 export const ChannelView: React.SFC<IComponentProps> = () => {
   const [{ channelName, nick }, dispatch] = useApplicationState()
-  const [messageState, sendMessage] = usePusher(ChannelReducer, defaultChannelState, {
+  const [messageState, sendMessage, changeChannel] = usePusher(ChannelReducer, defaultChannelState, {
     initialChannelName: channelName,
     initialEventName: 'messages',
     privateChannel: true
   })
   const [inputText, setInputText] = useState<string>('')
-  const [messages, setMessages] = useState<string[]>([])
+  const [messages, setMessages] = useState<IChannelMessage[]>([])
 
   const handleTextChange = useCallback((event: IFormEvent<'input'>) => {
     event.persist
@@ -59,19 +62,23 @@ export const ChannelView: React.SFC<IComponentProps> = () => {
   }, [])
 
   const handleButtonClick = useCallback(() => {
-    sendMessage(ChannelActions.text(inputText), true)
-    setInputText('')
+    if (nick) {
+      sendMessage(ChannelActions.text({ user: nick, message: inputText }), true)
+      setInputText('')
+    }
   }, [inputText])
 
   useEffect(() => {
     if (!channelName || channelName === '') {
       dispatch(ApplicationActions.changePath('/'))
+    } else {
+      changeChannel(channelName)
     }
   }, [channelName])
 
   useEffect(() => {
-    if (messageState.messageText && (messages.length === 0 || messages[0] !== messageState.messageText)) {
-      const newMessages = [messageState.messageText, ...messages]
+    if (messageState.channelMessage && (messages.length === 0 || messages[0] !== messageState.channelMessage)) {
+      const newMessages = [messageState.channelMessage, ...messages]
       setMessages(newMessages)
     }
   }, [messageState, messages])
@@ -90,11 +97,35 @@ export const ChannelView: React.SFC<IComponentProps> = () => {
       </Navbar>
 
       <div className='container chat-container'>
-        {messages.map((m, index) => (
-          <Alert key={index} variant='primary'>
-            {m}
-          </Alert>
-        ))}
+        {messages.map((m, index) =>
+          m.user !== nick ? (
+            <Row key={index}>
+              <div className='pr-2'>
+                <h6>
+                  <span>{m.user}</span>
+                </h6>
+              </div>
+              <div>
+                <h5>
+                  <Badge variant='light'>{m.message}</Badge>
+                </h5>
+              </div>
+            </Row>
+          ) : (
+            <Row key={index} className='chat-self'>
+              <div className='pl-2'>
+                <h6>
+                  <span>{m.user}</span>
+                </h6>
+              </div>
+              <div>
+                <h5>
+                  <Badge variant='light'>{m.message}</Badge>
+                </h5>
+              </div>
+            </Row>
+          )
+        )}
       </div>
 
       <Navbar bg='dark' variant='dark' fixed='bottom'>

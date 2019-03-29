@@ -1,6 +1,6 @@
 import { IAction, IActionCreators } from 'src/types/actions'
 
-export type IApplicationActionPayloadMap = {
+type IApplicationActionPayloadMap = {
   noop: undefined
   changePath: string
   openChannel: {
@@ -21,11 +21,8 @@ export const ApplicationActions: IActionCreators<IApplicationActionPayloadMap> =
     type: 'changePath',
     payload: path
   }),
-  openChannel: (channelName: string, nick: string) => ({
+  openChannel: (payload: { channelName: string; nick: string }) => ({
     type: 'openChannel',
-    payload: {
-      channelName,
-      nick
-    }
+    payload
   })
 }

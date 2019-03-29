@@ -9,10 +9,7 @@ export interface IApplicationState {
   nick?: string
 }
 
-export const initialApplicationState: IApplicationState = {
-  channelName: 'foo',
-  nick: 'bill'
-}
+export const initialApplicationState: IApplicationState = {}
 
 export const useApplicationState = () => {
   const context = useContext<IApplicationContext<IApplicationState, IApplicationAction>>(ApplicationStateContext)
