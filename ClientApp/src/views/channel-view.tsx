@@ -99,7 +99,7 @@ export const ChannelView: React.SFC<IComponentProps> = () => {
       <div className='container chat-container'>
         {messages.map((m, index) =>
           m.user !== nick ? (
-            <Row key={index}>
+            <Row key={index} className='chat-other'>
               <div className='pr-2'>
                 <h6>
                   <span>{m.user}</span>

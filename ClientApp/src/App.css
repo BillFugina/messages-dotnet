@@ -22,3 +22,8 @@
   align-items: baseline;
   flex-direction: row-reverse;
 }
+
+.chat-other {
+  align-items: baseline;
+  flex-direction: row;
+}

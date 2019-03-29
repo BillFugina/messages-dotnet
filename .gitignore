@@ -235,3 +235,6 @@ _Pvt_Extensions
 
 # node_modules
 **/node_modules
+
+# loacal app settings
+appsettings.Development.json
